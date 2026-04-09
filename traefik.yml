@@ -1,0 +1,17 @@
+services:
+  traefik:
+      image: traefik:v3.0
+      container_name: traefik
+      networks:
+        - rocketchat
+      ports:
+        - "80:80"
+        - "8888:8080"
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - ./traefik/traefik.yml:/etc/traefik/traefik.yml
+      restart: unless-stopped
+
+networks:
+  rocketchat:
+    driver: bridge

@@ -1,0 +1,30 @@
+services:
+  rocketchat:
+    image: registry.rocket.chat/rocketchat/rocket.chat:8.0.1
+    restart: always
+    volumes:
+      - ./uploads:/app/uploads
+    environment:
+      #ROOT_URL: http://localhost
+      ROOT_URL: http://chat2.unova.fr
+      PORT: 3000
+      DEPLOY_METHOD: docker
+      DEPLOY_PLATFORM: compose
+      LICENSE_DEBUG: true
+      MONGO_URL: ${MONGO_URL:-mongodb://mongodb:27017/rocketchat}
+     #?replicaSet=rs0}
+    expose:
+      - 3000
+    ports:
+      - "3000:3000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.rocketchat.rule=Host(`chat2.unova.fr`)"
+      - "traefik.http.routers.rocketchat.entrypoints=web"
+      - "traefik.http.services.rocketchat.loadbalancer.server.port=3000"
+    networks:
+      - rocketchat
+
+networks:
+  rocketchat:
+    driver: bridge
